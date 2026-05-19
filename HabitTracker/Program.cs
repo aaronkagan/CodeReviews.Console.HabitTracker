@@ -203,7 +203,7 @@ namespace habit_tracker
 
             if (dateInput == "0") GetUserInput();
 
-            while (!DateTime.TryParseExact(dateInput, "dd-MMM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+            while (!DateTime.TryParseExact(dateInput, "dd-MM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
             {
                 Console.WriteLine("\n\nInvalid date. (Format: dd-mm-yy). Type 0 to return to the main menu.\n\n");
                 dateInput = Console.ReadLine();
