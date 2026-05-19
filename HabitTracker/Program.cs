@@ -48,6 +48,7 @@ namespace habit_tracker
                     case "0":
                         Console.WriteLine("\nGodobye!\n");
                         closeApp = true;
+                        Environment.Exit(0);
                         break;
                     case "1":
                         GetAllRecords();
@@ -202,6 +203,12 @@ namespace habit_tracker
 
             if (dateInput == "0") GetUserInput();
 
+            while (!DateTime.TryParseExact(dateInput, "dd-MMM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+            {
+                Console.WriteLine("\n\nInvalid date. (Format: dd-mm-yy). Type 0 to return to the main menu.\n\n");
+                dateInput = Console.ReadLine();
+            }
+
             return dateInput;
         }
 
@@ -212,6 +219,12 @@ namespace habit_tracker
             string numberInput = Console.ReadLine();
 
             if (numberInput == "0") GetUserInput();
+
+            while (!Int32.TryParse(numberInput, out _) || Convert.ToInt32(numberInput) < 0)
+            {
+                Console.WriteLine("\n\nInvalid number. Try again.\n\n");
+                numberInput = Console.ReadLine();
+            }
 
             int finalInput = Convert.ToInt32(numberInput);
 
