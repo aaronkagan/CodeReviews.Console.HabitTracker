@@ -5,11 +5,11 @@ namespace habit_tracker
 {
     class Program
     {
-        static string connectionString = "Data Source=habit-tracker.db";
+        static readonly string _connectionString = "Data Source=habit-tracker.db";
 
         static void Main()
         {
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -46,7 +46,7 @@ namespace habit_tracker
                 switch (command)
                 {
                     case "0":
-                        Console.WriteLine("\nGodobye!\n");
+                        Console.WriteLine("\nGoodbye!\n");
                         closeApp = true;
                         Environment.Exit(0);
                         break;
@@ -73,7 +73,7 @@ namespace habit_tracker
         {
             Console.Clear();
 
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -120,7 +120,7 @@ namespace habit_tracker
             int quantity =
                 GetNumberInput(
                     "\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
 
@@ -139,7 +139,7 @@ namespace habit_tracker
 
             var recordId = GetNumberInput("\n\nPlease type the ID of the record you want to delete or type 0 to go to the main menu.\n\n");
 
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -167,7 +167,7 @@ namespace habit_tracker
                 GetNumberInput(
                     "\n\nPlease type the ID of the record you would like to update. Type 0 to return to the main menu.\n\n");
 
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
 
@@ -234,9 +234,9 @@ namespace habit_tracker
 
     public class DrinkingWater
     {
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public int Quantity { get; set; }
+        public int Id { get; init; }
+        public DateTime Date { get; init; }
+        public int Quantity { get; init; }
     }
 }
 
