@@ -58,9 +58,9 @@ namespace habit_tracker
                     case "3":
                         Delete();
                         break;
-                    // case "4":
-                    //     Update();
-                    //     break;
+                    case "4":
+                        Update();
+                        break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 - 4.\n");
                         break;
@@ -105,7 +105,7 @@ namespace habit_tracker
                 Console.WriteLine("-------------------------------------\n");
                 foreach (var dw in tableData)
                 {
-                    Console.WriteLine($"{dw.Id} - {dw.Date:dd-MM-yyyy} - Quantity: {dw.Quantity}");
+                    Console.WriteLine($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - Quantity: {dw.Quantity}");
                 }
                 
                 Console.WriteLine("\n-------------------------------------\n");
@@ -156,7 +156,42 @@ namespace habit_tracker
                 Console.ReadKey();
                 GetUserInput();
             }
+        }
 
+        private static void Update()
+        {
+            GetAllRecords();
+
+            var recordId =
+                GetNumberInput(
+                    "\n\nPlease type the ID of the record you would like to update. Type 0 to return to the main menu.\n\n");
+
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+
+                var checkCmd = connection.CreateCommand();
+                checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM drinking_water WHERE id = {recordId})";
+                int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                if (checkQuery == 0)
+                {
+                    Console.WriteLine($"\n\nRecord with Id {recordId} doesn't exist.\n\n");
+                    connection.Close();
+                    Update();
+                }
+
+                string date = GetDateInput();
+                int quantity =
+                    GetNumberInput(
+                        "\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
+                var tableCmd = connection.CreateCommand();
+                tableCmd.CommandText = $"UPDATE drinking_water SET date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
+
+                tableCmd.ExecuteNonQuery();
+                
+                connection.Close();
+            }
         }
 
         private static string GetDateInput()
