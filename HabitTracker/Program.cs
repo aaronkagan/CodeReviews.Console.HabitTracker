@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Globalization;
+using Microsoft.Data.Sqlite;
 
 namespace habit_tracker
 {
@@ -54,9 +55,9 @@ namespace habit_tracker
                     case "2":
                         Insert();
                         break;
-                    // case "3":
-                    //     Delete();
-                    //     break;
+                    case "3":
+                        Delete();
+                        break;
                     // case "4":
                     //     Update();
                     //     break;
@@ -64,8 +65,50 @@ namespace habit_tracker
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 - 4.\n");
                         break;
                 }
+            }
+        }
 
+        private static void GetAllRecords()
+        {
+            Console.Clear();
 
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+                var tableCmd = connection.CreateCommand();
+                tableCmd.CommandText = 
+                    $"SELECT * FROM drinking_water";
+
+                List<DrinkingWater> tableData = new();
+                SqliteDataReader reader = tableCmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        tableData.Add(
+                            new DrinkingWater
+                            {
+                                Id = reader.GetInt32(0),
+                                Date = DateTime.ParseExact(reader.GetString(1), "dd-MM-yy", new CultureInfo("en-US")),
+                                Quantity = reader.GetInt32(2)
+                            });
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No rows found");
+                }
+                
+                connection.Close();
+
+                Console.WriteLine("-------------------------------------\n");
+                foreach (var dw in tableData)
+                {
+                    Console.WriteLine($"{dw.Id} - {dw.Date:dd-MM-yyyy} - Quantity: {dw.Quantity}");
+                }
+                
+                Console.WriteLine("\n-------------------------------------\n");
             }
         }
 
@@ -86,6 +129,34 @@ namespace habit_tracker
 
                 connection.Close();
             }
+        }
+
+        private static void Delete()
+        {
+            Console.Clear();
+            GetAllRecords();
+
+            var recordId = GetNumberInput("\n\nPlease type the ID of the record you want to delete or type 0 to go to the main menu.\n\n");
+
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+                var tableCmd = connection.CreateCommand();
+                tableCmd.CommandText = $"DELETE from drinking_water where Id = '{recordId}'";
+
+                int rowCount = tableCmd.ExecuteNonQuery();
+
+                if (rowCount == 0)
+                {
+                    Console.WriteLine($"\n\nRecord with ID {recordId} doesn't exist.\n\n");
+                    Delete();
+                }
+
+                Console.WriteLine($"Record with ID {recordId} has been deleted. Press any key to continue.\n\n");
+                Console.ReadKey();
+                GetUserInput();
+            }
+
         }
 
         private static string GetDateInput()
@@ -111,6 +182,13 @@ namespace habit_tracker
 
             return finalInput;
         }
+    }
+
+    public class DrinkingWater
+    {
+        public int Id { get; set; }
+        public DateTime Date { get; set; }
+        public int Quantity { get; set; }
     }
 }
 
