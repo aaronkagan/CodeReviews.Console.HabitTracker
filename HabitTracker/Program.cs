@@ -1,5 +1,149 @@
 ﻿using System.Globalization;
+using habit_tracker;
 using Microsoft.Data.Sqlite;
+
+HabitRecord[] seedData = new HabitRecord[]
+{
+    // Day 1
+    new HabitRecord { Date = new DateTime(2026, 1, 1), Habit = "Water", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 1), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 1), Habit = "Sleep", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 1), Habit = "Reading", Quantity = 20 },
+    new HabitRecord { Date = new DateTime(2026, 1, 1), Habit = "Meditation", Quantity = 1 },
+
+    // Day 2
+    new HabitRecord { Date = new DateTime(2026, 1, 2), Habit = "Water", Quantity = 9 },
+    new HabitRecord { Date = new DateTime(2026, 1, 2), Habit = "Exercise", Quantity = 0 },
+    new HabitRecord { Date = new DateTime(2026, 1, 2), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 2), Habit = "Reading", Quantity = 25 },
+    new HabitRecord { Date = new DateTime(2026, 1, 2), Habit = "Meditation", Quantity = 1 },
+
+    // Day 3
+    new HabitRecord { Date = new DateTime(2026, 1, 3), Habit = "Water", Quantity = 10 },
+    new HabitRecord { Date = new DateTime(2026, 1, 3), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 3), Habit = "Sleep", Quantity = 6 },
+    new HabitRecord { Date = new DateTime(2026, 1, 3), Habit = "Reading", Quantity = 30 },
+    new HabitRecord { Date = new DateTime(2026, 1, 3), Habit = "Meditation", Quantity = 0 },
+
+    // Day 4
+    new HabitRecord { Date = new DateTime(2026, 1, 4), Habit = "Water", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 4), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 4), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 4), Habit = "Reading", Quantity = 15 },
+    new HabitRecord { Date = new DateTime(2026, 1, 4), Habit = "Meditation", Quantity = 1 },
+
+    // Day 5
+    new HabitRecord { Date = new DateTime(2026, 1, 5), Habit = "Water", Quantity = 11 },
+    new HabitRecord { Date = new DateTime(2026, 1, 5), Habit = "Exercise", Quantity = 0 },
+    new HabitRecord { Date = new DateTime(2026, 1, 5), Habit = "Sleep", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 5), Habit = "Reading", Quantity = 40 },
+    new HabitRecord { Date = new DateTime(2026, 1, 5), Habit = "Meditation", Quantity = 1 },
+
+    // Day 6
+    new HabitRecord { Date = new DateTime(2026, 1, 6), Habit = "Water", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 6), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 6), Habit = "Sleep", Quantity = 9 },
+    new HabitRecord { Date = new DateTime(2026, 1, 6), Habit = "Reading", Quantity = 10 },
+    new HabitRecord { Date = new DateTime(2026, 1, 6), Habit = "Meditation", Quantity = 0 },
+
+    // Day 7
+    new HabitRecord { Date = new DateTime(2026, 1, 7), Habit = "Water", Quantity = 9 },
+    new HabitRecord { Date = new DateTime(2026, 1, 7), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 7), Habit = "Sleep", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 7), Habit = "Reading", Quantity = 22 },
+    new HabitRecord { Date = new DateTime(2026, 1, 7), Habit = "Meditation", Quantity = 1 },
+
+    // Day 8
+    new HabitRecord { Date = new DateTime(2026, 1, 8), Habit = "Water", Quantity = 10 },
+    new HabitRecord { Date = new DateTime(2026, 1, 8), Habit = "Exercise", Quantity = 0 },
+    new HabitRecord { Date = new DateTime(2026, 1, 8), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 8), Habit = "Reading", Quantity = 35 },
+    new HabitRecord { Date = new DateTime(2026, 1, 8), Habit = "Meditation", Quantity = 1 },
+
+    // Day 9
+    new HabitRecord { Date = new DateTime(2026, 1, 9), Habit = "Water", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 9), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 9), Habit = "Sleep", Quantity = 6 },
+    new HabitRecord { Date = new DateTime(2026, 1, 9), Habit = "Reading", Quantity = 18 },
+    new HabitRecord { Date = new DateTime(2026, 1, 9), Habit = "Meditation", Quantity = 0 },
+
+    // Day 10
+    new HabitRecord { Date = new DateTime(2026, 1, 10), Habit = "Water", Quantity = 12 },
+    new HabitRecord { Date = new DateTime(2026, 1, 10), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 10), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 10), Habit = "Reading", Quantity = 50 },
+    new HabitRecord { Date = new DateTime(2026, 1, 10), Habit = "Meditation", Quantity = 1 },
+
+    // Day 11
+    new HabitRecord { Date = new DateTime(2026, 1, 11), Habit = "Water", Quantity = 9 },
+    new HabitRecord { Date = new DateTime(2026, 1, 11), Habit = "Exercise", Quantity = 0 },
+    new HabitRecord { Date = new DateTime(2026, 1, 11), Habit = "Sleep", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 11), Habit = "Reading", Quantity = 12 },
+    new HabitRecord { Date = new DateTime(2026, 1, 11), Habit = "Meditation", Quantity = 1 },
+
+    // Day 12
+    new HabitRecord { Date = new DateTime(2026, 1, 12), Habit = "Water", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 12), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 12), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 12), Habit = "Reading", Quantity = 28 },
+    new HabitRecord { Date = new DateTime(2026, 1, 12), Habit = "Meditation", Quantity = 0 },
+
+    // Day 13
+    new HabitRecord { Date = new DateTime(2026, 1, 13), Habit = "Water", Quantity = 10 },
+    new HabitRecord { Date = new DateTime(2026, 1, 13), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 13), Habit = "Sleep", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 13), Habit = "Reading", Quantity = 33 },
+    new HabitRecord { Date = new DateTime(2026, 1, 13), Habit = "Meditation", Quantity = 1 },
+
+    // Day 14
+    new HabitRecord { Date = new DateTime(2026, 1, 14), Habit = "Water", Quantity = 11 },
+    new HabitRecord { Date = new DateTime(2026, 1, 14), Habit = "Exercise", Quantity = 0 },
+    new HabitRecord { Date = new DateTime(2026, 1, 14), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 14), Habit = "Reading", Quantity = 45 },
+    new HabitRecord { Date = new DateTime(2026, 1, 14), Habit = "Meditation", Quantity = 1 },
+
+    // Day 15
+    new HabitRecord { Date = new DateTime(2026, 1, 15), Habit = "Water", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 15), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 15), Habit = "Sleep", Quantity = 9 },
+    new HabitRecord { Date = new DateTime(2026, 1, 15), Habit = "Reading", Quantity = 20 },
+    new HabitRecord { Date = new DateTime(2026, 1, 15), Habit = "Meditation", Quantity = 0 },
+
+    // Day 16
+    new HabitRecord { Date = new DateTime(2026, 1, 16), Habit = "Water", Quantity = 9 },
+    new HabitRecord { Date = new DateTime(2026, 1, 16), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 16), Habit = "Sleep", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 16), Habit = "Reading", Quantity = 38 },
+    new HabitRecord { Date = new DateTime(2026, 1, 16), Habit = "Meditation", Quantity = 1 },
+
+    // Day 17
+    new HabitRecord { Date = new DateTime(2026, 1, 17), Habit = "Water", Quantity = 10 },
+    new HabitRecord { Date = new DateTime(2026, 1, 17), Habit = "Exercise", Quantity = 0 },
+    new HabitRecord { Date = new DateTime(2026, 1, 17), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 17), Habit = "Reading", Quantity = 26 },
+    new HabitRecord { Date = new DateTime(2026, 1, 17), Habit = "Meditation", Quantity = 1 },
+
+    // Day 18
+    new HabitRecord { Date = new DateTime(2026, 1, 18), Habit = "Water", Quantity = 12 },
+    new HabitRecord { Date = new DateTime(2026, 1, 18), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 18), Habit = "Sleep", Quantity = 6 },
+    new HabitRecord { Date = new DateTime(2026, 1, 18), Habit = "Reading", Quantity = 55 },
+    new HabitRecord { Date = new DateTime(2026, 1, 18), Habit = "Meditation", Quantity = 0 },
+
+    // Day 19
+    new HabitRecord { Date = new DateTime(2026, 1, 19), Habit = "Water", Quantity = 9 },
+    new HabitRecord { Date = new DateTime(2026, 1, 19), Habit = "Exercise", Quantity = 1 },
+    new HabitRecord { Date = new DateTime(2026, 1, 19), Habit = "Sleep", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 19), Habit = "Reading", Quantity = 30 },
+    new HabitRecord { Date = new DateTime(2026, 1, 19), Habit = "Meditation", Quantity = 1 },
+
+    // Day 20
+    new HabitRecord { Date = new DateTime(2026, 1, 20), Habit = "Water", Quantity = 8 },
+    new HabitRecord { Date = new DateTime(2026, 1, 20), Habit = "Exercise", Quantity = 0 },
+    new HabitRecord { Date = new DateTime(2026, 1, 20), Habit = "Sleep", Quantity = 7 },
+    new HabitRecord { Date = new DateTime(2026, 1, 20), Habit = "Reading", Quantity = 24 },
+    new HabitRecord { Date = new DateTime(2026, 1, 20), Habit = "Meditation", Quantity = 1 }
+};
 
 namespace habit_tracker
 {
