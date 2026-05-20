@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using habit_tracker;
 using Microsoft.Data.Sqlite;
 
 
@@ -299,31 +298,47 @@ namespace habit_tracker
         {
             Console.Clear();
 
-            Console.WriteLine("\n\nPlease type the name of the habit you would like to retrieve records for.\n\n");
-
-            string habit = Console.ReadLine();
-
             using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
+                
+                tableCmd.CommandText = "SELECT DISTINCT Habit FROM Habits;";
+
+                using SqliteDataReader reader = tableCmd.ExecuteReader();
+
+                List<string> habits = new List<string>();
+
+                while (reader.Read())
+                {
+                    habits.Add(reader.GetString(0));
+                }
+                
+                connection.Close();
+                
+                connection.Open();
+                
+                Console.WriteLine($"\n\nPlease type the name of the habit you would like to retrieve records for. Options are {string.Join(", ", habits)}.\n\n");
+                string habit = Console.ReadLine();
+               
                 tableCmd.CommandText =
                     $"SELECT * FROM habits WHERE Lower(Habit) = '{habit.ToLower()}'";
 
+                var secondreader = tableCmd.ExecuteReader();
+                
                 List<HabitRecord> tableData = new();
-                SqliteDataReader reader = tableCmd.ExecuteReader();
 
-                if (reader.HasRows)
+                if (secondreader.HasRows)
                 {
-                    while (reader.Read())
+                    while (secondreader.Read())
                     {
                         tableData.Add(
                             new HabitRecord
                             {
-                                Id = reader.GetInt32(0),
-                                Habit = reader.GetString(1),
-                                Date = DateTime.ParseExact(reader.GetString(2), "dd-MM-yy", new CultureInfo("en-US")),
-                                Quantity = reader.GetInt32(3)
+                                Id = secondreader.GetInt32(0),
+                                Habit = secondreader.GetString(1),
+                                Date = DateTime.ParseExact(secondreader.GetString(2), "dd-MM-yy", new CultureInfo("en-US")),
+                                Quantity = secondreader.GetInt32(3)
                             });
                     }
                 }
@@ -418,6 +433,7 @@ namespace habit_tracker
                     Update();
                 }
 
+                
                 string date = GetDateInput();
                 string habit = GetHabitInput("\n\nPlease enter the name of the habit to update.\n\n");
                 int quantity =
