@@ -14,8 +14,9 @@ namespace habit_tracker
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
                 tableCmd.CommandText =
-                    @"CREATE TABLE IF NOT EXISTS drinking_water (
+                    @"CREATE TABLE IF NOT EXISTS habits (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Habit TEXT,
                     Date TEXT,
                     Quantity INTEGER
             )";
@@ -78,9 +79,9 @@ namespace habit_tracker
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
                 tableCmd.CommandText = 
-                    $"SELECT * FROM drinking_water";
+                    $"SELECT * FROM habits";
 
-                List<DrinkingWater> tableData = new();
+                List<HabitRecord> tableData = new();
                 SqliteDataReader reader = tableCmd.ExecuteReader();
 
                 if (reader.HasRows)
@@ -88,11 +89,12 @@ namespace habit_tracker
                     while (reader.Read())
                     {
                         tableData.Add(
-                            new DrinkingWater
+                            new HabitRecord
                             {
                                 Id = reader.GetInt32(0),
-                                Date = DateTime.ParseExact(reader.GetString(1), "dd-MM-yy", new CultureInfo("en-US")),
-                                Quantity = reader.GetInt32(2)
+                                Habit = reader.GetString(1),
+                                Date = DateTime.ParseExact(reader.GetString(2), "dd-MM-yy", new CultureInfo("en-US")),
+                                Quantity = reader.GetInt32(3)
                             });
                     }
                 }
@@ -104,9 +106,10 @@ namespace habit_tracker
                 connection.Close();
 
                 Console.WriteLine("-------------------------------------\n");
-                foreach (var dw in tableData)
+                Console.WriteLine("ID | HABIT | DATE | QUANTITY");
+                foreach (var record in tableData)
                 {
-                    Console.WriteLine($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - Quantity: {dw.Quantity}");
+                    Console.WriteLine($"{record.Id} - {record.Habit} - {record.Date.ToString("dd-MMM-yyyy")} - Quantity: {record.Quantity}");
                 }
                 
                 Console.WriteLine("\n-------------------------------------\n");
@@ -117,15 +120,17 @@ namespace habit_tracker
         {
             string date = GetDateInput();
 
+            string habit = GetHabitInput("\n\nPlease type the habit you would like to track or type 0 to go to the main menu.\n\n");
+            
             int quantity =
                 GetNumberInput(
-                    "\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
+                    "\n\nPlease insert quantity to track (no decimals allowed)\n\n");
             using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
 
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"INSERT INTO drinking_water(date, quantity) VALUES('{date}', '{quantity}')";
+                tableCmd.CommandText = $"INSERT INTO habits(habit, date, quantity) VALUES('{habit}', '{date}', '{quantity}')";
                 tableCmd.ExecuteNonQuery();
 
                 connection.Close();
@@ -143,7 +148,7 @@ namespace habit_tracker
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"DELETE from drinking_water where Id = '{recordId}'";
+                tableCmd.CommandText = $"DELETE from habits where Id = '{recordId}'";
 
                 int rowCount = tableCmd.ExecuteNonQuery();
 
@@ -165,14 +170,14 @@ namespace habit_tracker
 
             var recordId =
                 GetNumberInput(
-                    "\n\nPlease type the ID of the record you would like to update. Type 0 to return to the main menu.\n\n");
+                    "\n\nPlease type the ID of the habit record you would like to update. Type 0 to return to the main menu.\n\n");
 
             using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
 
                 var checkCmd = connection.CreateCommand();
-                checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM drinking_water WHERE id = {recordId})";
+                checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM habits WHERE id = {recordId})";
                 int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                 if (checkQuery == 0)
@@ -183,11 +188,12 @@ namespace habit_tracker
                 }
 
                 string date = GetDateInput();
+                string habit = GetHabitInput("\n\nPlease enter the name of the habit to update.\n\n");
                 int quantity =
                     GetNumberInput(
-                        "\n\nPlease insert number of glasses or other measure of your choice (no decimals allowed)\n\n");
+                        "\n\nPlease insert quantity to track (no decimals allowed)\n\n");
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"UPDATE drinking_water SET date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
+                tableCmd.CommandText = $"UPDATE habits SET habit = '{habit}', date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
 
                 tableCmd.ExecuteNonQuery();
                 
@@ -230,11 +236,24 @@ namespace habit_tracker
 
             return finalInput;
         }
+
+        private static string GetHabitInput(string message)
+        {
+            Console.WriteLine(message);
+
+            string habitInput = Console.ReadLine();
+            
+            if (habitInput == "0") GetUserInput();
+
+            return habitInput;
+            
+        }
     }
 
-    public class DrinkingWater
+    public class HabitRecord
     {
         public int Id { get; init; }
+        public string Habit { get; init; }
         public DateTime Date { get; init; }
         public int Quantity { get; init; }
     }
