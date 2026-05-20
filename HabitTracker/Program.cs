@@ -37,9 +37,10 @@ namespace habit_tracker
                 Console.WriteLine("\nWhat would you like to do?");
                 Console.WriteLine("\nType 0 to Close Application");
                 Console.WriteLine("Type 1 to View All Records");
-                Console.WriteLine("Type 2 to Insert record");
-                Console.WriteLine("Type 3 to Delete record");
-                Console.WriteLine("Type 4 to Update record");
+                Console.WriteLine("Type 2 to View Records for a specific habit");
+                Console.WriteLine("Type 3 to Insert record");
+                Console.WriteLine("Type 4 to Delete record");
+                Console.WriteLine("Type 5 to Update record");
                 Console.WriteLine("-------------------------------------\n");
 
                 string command = Console.ReadLine();
@@ -55,16 +56,19 @@ namespace habit_tracker
                         GetAllRecords();
                         break;
                     case "2":
-                        Insert();
+                        GetHabitRecords();
                         break;
                     case "3":
-                        Delete();
+                        Insert();
                         break;
                     case "4":
+                        Delete();
+                        break;
+                    case "5":
                         Update();
                         break;
                     default:
-                        Console.WriteLine("\nInvalid Command. Please type a number from 0 - 4.\n");
+                        Console.WriteLine("\nInvalid Command. Please type a number from 0 - 5.\n");
                         break;
                 }
             }
@@ -114,6 +118,58 @@ namespace habit_tracker
                 
                 Console.WriteLine("\n-------------------------------------\n");
             }
+        }
+
+        private static void GetHabitRecords()
+        {
+            Console.Clear();
+
+            Console.WriteLine("\n\nPlease type the name of the habit you would like to retrieve records for.\n\n");
+
+            string habit = Console.ReadLine();
+
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var tableCmd = connection.CreateCommand();
+                tableCmd.CommandText =
+                    $"SELECT * FROM habits WHERE Lower(Habit) = '{habit.ToLower()}'";
+
+                List<HabitRecord> tableData = new();
+                SqliteDataReader reader = tableCmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        tableData.Add(
+                            new HabitRecord
+                            {
+                                Id = reader.GetInt32(0),
+                                Habit = reader.GetString(1),
+                                Date = DateTime.ParseExact(reader.GetString(2), "dd-MM-yy", new CultureInfo("en-US")),
+                                Quantity = reader.GetInt32(3)
+                            });
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No rows found");
+                }
+
+                connection.Close();
+
+                Console.WriteLine("-------------------------------------\n");
+                Console.WriteLine("ID | HABIT | DATE | QUANTITY");
+                foreach (var record in tableData)
+                {
+                    Console.WriteLine(
+                        $"{record.Id} - {record.Habit} - {record.Date.ToString("dd-MMM-yyyy")} - Quantity: {record.Quantity}");
+                }
+
+                Console.WriteLine("\n-------------------------------------\n");
+            }
+
         }
 
         private static void Insert()
