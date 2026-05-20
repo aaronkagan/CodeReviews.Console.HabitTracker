@@ -2,7 +2,14 @@
 using habit_tracker;
 using Microsoft.Data.Sqlite;
 
-HabitRecord[] seedData = new HabitRecord[]
+
+
+namespace habit_tracker
+{
+    class Program
+    {
+        static readonly string ConnectionString = "Data Source=habit-tracker.db";
+        static readonly HabitRecord[] Data = new HabitRecord[]
 {
     // Day 1
     new HabitRecord { Date = new DateTime(2026, 1, 1), Habit = "Water", Quantity = 8 },
@@ -145,15 +152,9 @@ HabitRecord[] seedData = new HabitRecord[]
     new HabitRecord { Date = new DateTime(2026, 1, 20), Habit = "Meditation", Quantity = 1 }
 };
 
-namespace habit_tracker
-{
-    class Program
-    {
-        static readonly string _connectionString = "Data Source=habit-tracker.db";
-
         static void Main()
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -167,6 +168,8 @@ namespace habit_tracker
                 tableCmd.ExecuteNonQuery();
                 connection.Close();
             }
+            
+            SeedData();
 
             GetUserInput();
         }
@@ -218,11 +221,37 @@ namespace habit_tracker
             }
         }
 
+        private static void SeedData()
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            connection.Open();
+
+            using var transaction = connection.BeginTransaction();
+
+            foreach (var habit in Data)
+            {
+                var cmd = connection.CreateCommand();
+                cmd.Transaction = transaction;
+
+                cmd.CommandText =
+                    @"INSERT INTO Habits (Date, Habit, Quantity)
+          VALUES ($date, $habit, $quantity);";
+
+                cmd.Parameters.AddWithValue("$date", habit.Date);
+                cmd.Parameters.AddWithValue("$habit", habit.Habit);
+                cmd.Parameters.AddWithValue("$quantity", habit.Quantity);
+
+                cmd.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+
         private static void GetAllRecords()
         {
             Console.Clear();
 
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -272,7 +301,7 @@ namespace habit_tracker
 
             string habit = Console.ReadLine();
 
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -325,7 +354,7 @@ namespace habit_tracker
             int quantity =
                 GetNumberInput(
                     "\n\nPlease insert quantity to track (no decimals allowed)\n\n");
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
 
@@ -344,7 +373,7 @@ namespace habit_tracker
 
             var recordId = GetNumberInput("\n\nPlease type the ID of the record you want to delete or type 0 to go to the main menu.\n\n");
 
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -372,7 +401,7 @@ namespace habit_tracker
                 GetNumberInput(
                     "\n\nPlease type the ID of the habit record you would like to update. Type 0 to return to the main menu.\n\n");
 
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
 
