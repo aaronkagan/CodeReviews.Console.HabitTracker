@@ -163,7 +163,8 @@ namespace habit_tracker
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Habit TEXT,
                     Date TEXT,
-                    Quantity INTEGER
+                    Quantity INTEGER,
+                    UNIQUE(Date, Habit)
             )";
                 tableCmd.ExecuteNonQuery();
                 connection.Close();
@@ -233,11 +234,12 @@ namespace habit_tracker
                 var cmd = connection.CreateCommand();
                 cmd.Transaction = transaction;
 
+
                 cmd.CommandText =
-                    @"INSERT INTO Habits (Date, Habit, Quantity)
+                    @"INSERT OR IGNORE INTO Habits (Date, Habit, Quantity)
           VALUES ($date, $habit, $quantity);";
 
-                cmd.Parameters.AddWithValue("$date", habit.Date);
+                cmd.Parameters.AddWithValue("$date", habit.Date.ToString("dd-MM-yy"));
                 cmd.Parameters.AddWithValue("$habit", habit.Habit);
                 cmd.Parameters.AddWithValue("$quantity", habit.Quantity);
 
