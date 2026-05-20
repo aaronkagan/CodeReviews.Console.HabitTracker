@@ -113,7 +113,7 @@ namespace habit_tracker
                 Console.WriteLine("ID | HABIT | DATE | QUANTITY");
                 foreach (var record in tableData)
                 {
-                    Console.WriteLine($"{record.Id} - {record.Habit} - {record.Date.ToString("dd-MMM-yyyy")} - Quantity: {record.Quantity}");
+                    Console.WriteLine($"{record.Id} - {record.Habit} - {record.Date.ToString("dd-MMM-yyyy")} - {record.Quantity}");
                 }
                 
                 Console.WriteLine("\n-------------------------------------\n");
@@ -164,7 +164,7 @@ namespace habit_tracker
                 foreach (var record in tableData)
                 {
                     Console.WriteLine(
-                        $"{record.Id} - {record.Habit} - {record.Date.ToString("dd-MMM-yyyy")} - Quantity: {record.Quantity}");
+                        $"{record.Id} - {record.Habit} - {record.Date.ToString("dd-MMM-yyyy")} - {record.Quantity}");
                 }
 
                 Console.WriteLine("\n-------------------------------------\n");
