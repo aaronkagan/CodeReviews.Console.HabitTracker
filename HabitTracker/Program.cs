@@ -164,13 +164,13 @@ namespace habit_tracker
 
                 var tableCmd = connection.CreateCommand();
                 tableCmd.CommandText = @"
-        CREATE TABLE IF NOT EXISTS habits (
-            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Habit TEXT,
-            Date TEXT,
-            Quantity INTEGER,
-            UNIQUE(Date, Habit)
-        )";
+                    CREATE TABLE IF NOT EXISTS habits (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Habit TEXT,
+                        Date TEXT,
+                        Quantity INTEGER,
+                        UNIQUE(Date, Habit)
+                    )";
                 tableCmd.ExecuteNonQuery();
 
                 if (!tableExisted)
@@ -243,7 +243,7 @@ namespace habit_tracker
         
                 cmd.CommandText =
                     @"INSERT OR IGNORE INTO Habits (Date, Habit, Quantity)
-          VALUES ($date, $habit, $quantity);";
+                        VALUES ($date, $habit, $quantity);";
         
                 cmd.Parameters.AddWithValue("$date", habit.Date.ToString("dd-MM-yy"));
                 cmd.Parameters.AddWithValue("$habit", habit.Habit);
