@@ -8,7 +8,7 @@ namespace habit_tracker
     class Program
     {
         static readonly string ConnectionString = "Data Source=habit-tracker.db";
-        static readonly HabitRecord[] Data = new HabitRecord[]
+         static readonly HabitRecord[] Data = new HabitRecord[]
 {
     // Day 1
     new HabitRecord { Date = new DateTime(2026, 1, 1), Habit = "Water", Quantity = 8 },
@@ -151,25 +151,33 @@ namespace habit_tracker
     new HabitRecord { Date = new DateTime(2026, 1, 20), Habit = "Meditation", Quantity = 1 }
 };
 
+
         static void Main()
         {
             using (var connection = new SqliteConnection(ConnectionString))
             {
                 connection.Open();
+
+                var checkCmd = connection.CreateCommand();
+                checkCmd.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='habits';";
+                bool tableExisted = (long)checkCmd.ExecuteScalar() > 0;
+
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText =
-                    @"CREATE TABLE IF NOT EXISTS habits (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Habit TEXT,
-                    Date TEXT,
-                    Quantity INTEGER,
-                    UNIQUE(Date, Habit)
-            )";
+                tableCmd.CommandText = @"
+        CREATE TABLE IF NOT EXISTS habits (
+            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            Habit TEXT,
+            Date TEXT,
+            Quantity INTEGER,
+            UNIQUE(Date, Habit)
+        )";
                 tableCmd.ExecuteNonQuery();
-                connection.Close();
+
+                if (!tableExisted)
+                {
+                    SeedData(connection);
+                }
             }
-            
-            SeedData();
 
             GetUserInput();
         }
@@ -221,30 +229,29 @@ namespace habit_tracker
             }
         }
 
-        private static void SeedData()
+        private static void SeedData(SqliteConnection connection)
         {
-            using var connection = new SqliteConnection(ConnectionString);
             connection.Open();
-
+        
             using var transaction = connection.BeginTransaction();
-
+        
             foreach (var habit in Data)
             {
                 var cmd = connection.CreateCommand();
                 cmd.Transaction = transaction;
-
-
+        
+        
                 cmd.CommandText =
                     @"INSERT OR IGNORE INTO Habits (Date, Habit, Quantity)
           VALUES ($date, $habit, $quantity);";
-
+        
                 cmd.Parameters.AddWithValue("$date", habit.Date.ToString("dd-MM-yy"));
                 cmd.Parameters.AddWithValue("$habit", habit.Habit);
                 cmd.Parameters.AddWithValue("$quantity", habit.Quantity);
-
+        
                 cmd.ExecuteNonQuery();
             }
-
+        
             transaction.Commit();
         }
 
