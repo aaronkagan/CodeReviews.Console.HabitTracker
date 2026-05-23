@@ -244,11 +244,11 @@ namespace habit_tracker
         
                 cmd.CommandText =
                     @"INSERT OR IGNORE INTO Habits (Date, Habit, Quantity)
-                        VALUES ($date, $habit, $quantity);";
+                        VALUES (@date, @habit, @quantity);";
         
-                cmd.Parameters.AddWithValue("$date", habit.Date.ToString("dd-MM-yy"));
-                cmd.Parameters.AddWithValue("$habit", habit.Habit);
-                cmd.Parameters.AddWithValue("$quantity", habit.Quantity);
+                cmd.Parameters.AddWithValue("@date", habit.Date.ToString("dd-MM-yy"));
+                cmd.Parameters.AddWithValue("@habit", habit.Habit);
+                cmd.Parameters.AddWithValue("@quantity", habit.Quantity);
         
                 cmd.ExecuteNonQuery();
             }
@@ -265,7 +265,7 @@ namespace habit_tracker
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
                 tableCmd.CommandText = 
-                    $"SELECT * FROM habits";
+                    "SELECT * FROM habits";
 
                 List<HabitRecord> tableData = new();
                 SqliteDataReader reader = tableCmd.ExecuteReader();
@@ -386,7 +386,7 @@ namespace habit_tracker
                 connection.Open();
 
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"INSERT INTO habits(habit, date, quantity) VALUES(@habit, @date, @quantity)";
+                tableCmd.CommandText = "INSERT INTO habits(habit, date, quantity) VALUES(@habit, @date, @quantity)";
 
                 tableCmd.Parameters.AddWithValue("@habit", habit);
                 tableCmd.Parameters.AddWithValue("@date", date);
@@ -407,7 +407,7 @@ namespace habit_tracker
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"DELETE from habits where Id = @RecordId";
+                tableCmd.CommandText = "DELETE from habits where Id = @RecordId";
                 
                 tableCmd.Parameters.AddWithValue("@RecordId", recordId);
                 
@@ -439,7 +439,7 @@ namespace habit_tracker
                 connection.Open();
 
                 var checkCmd = connection.CreateCommand();
-                checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM habits WHERE id = @RecordId)";
+                checkCmd.CommandText = "SELECT EXISTS(SELECT 1 FROM habits WHERE id = @RecordId)";
                 
                 checkCmd.Parameters.AddWithValue("@RecordId", recordId);
                 
