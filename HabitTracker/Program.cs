@@ -393,6 +393,8 @@ namespace habit_tracker
                 tableCmd.Parameters.AddWithValue("@quantity", quantity);
                 tableCmd.ExecuteNonQuery();
                 connection.Close();
+                Console.WriteLine("\n\nNew record created\n\n");
+                
             }
         }
 
@@ -469,6 +471,8 @@ namespace habit_tracker
                 tableCmd.ExecuteNonQuery();
                 
                 connection.Close();
+
+                Console.WriteLine("\n\nRecord updated\n\n");
             }
         }
 
