@@ -326,7 +326,7 @@ namespace habit_tracker
                 
                 connection.Open();
                 
-                Console.WriteLine($"\n\nPlease type the name of the habit you would like to retrieve records for. Options are {string.Join(", ", habits)}.\n\n");
+                Console.WriteLine($"\n\nPlease type the name of the habit you would like to retrieve records for.\nOptions are {string.Join(", ", habits)}.\n\n");
                 string habit = Console.ReadLine();
                
                 tableCmd.CommandText =
@@ -376,7 +376,7 @@ namespace habit_tracker
         {
             string date = GetDateInput();
 
-            string habit = GetHabitInput("\n\nPlease type the habit you would like to track or type 0 to go to the main menu.\n\n");
+            string habit = GetHabitInput("\n\nPlease type the habit you would like to track. Type 0 to return to the main menu..\n\n");
             
             int quantity =
                 GetNumberInput(
@@ -403,7 +403,7 @@ namespace habit_tracker
             Console.Clear();
             GetAllRecords();
 
-            var recordId = GetNumberInput("\n\nPlease type the ID of the record you want to delete or type 0 to go to the main menu.\n\n");
+            var recordId = GetNumberInput("\n\nPlease type the ID of the record you want to delete. Type 0 to return to the main menu.\n\n");
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -456,7 +456,7 @@ namespace habit_tracker
 
                 
                 string date = GetDateInput();
-                string habit = GetHabitInput("\n\nPlease enter the name of the habit to update.\n\n");
+                string habit = GetHabitInput("\n\nPlease enter the name of the habit to update. Type 0 to return to the main menu.\n\n");
                 int quantity =
                     GetNumberInput(
                         "\n\nPlease insert quantity to track (no decimals allowed)\n\n");
