@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.Data.Sqlite;
 
-
-
 namespace habit_tracker
 {
     class Program
