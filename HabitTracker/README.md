@@ -22,6 +22,7 @@ Developed using C# and SQLite.
 -[X] The ability for users to only view records for a specific habit
 -[X] Showing users the options for which habits to show
 -[X] Using parameterized queries
+-[x] Seeding the data the first time with dummy data
 
 # Lessons Learned
 - Understanding parameterized queries
