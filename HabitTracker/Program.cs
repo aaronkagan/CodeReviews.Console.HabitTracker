@@ -159,7 +159,9 @@ namespace habit_tracker
                 connection.Open();
 
                 var checkCmd = connection.CreateCommand();
-                checkCmd.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='habits';";
+                checkCmd.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=@tableName;";
+                checkCmd.Parameters.AddWithValue("@tableName", "habits");
+
                 bool tableExisted = (long)checkCmd.ExecuteScalar() > 0;
 
                 var tableCmd = connection.CreateCommand();
@@ -231,8 +233,7 @@ namespace habit_tracker
 
         private static void SeedData(SqliteConnection connection)
         {
-            connection.Open();
-        
+            
             using var transaction = connection.BeginTransaction();
         
             foreach (var habit in Data)
@@ -329,8 +330,10 @@ namespace habit_tracker
                 string habit = Console.ReadLine();
                
                 tableCmd.CommandText =
-                    $"SELECT * FROM habits WHERE Lower(Habit) = '{habit.ToLower()}'";
-
+                    "SELECT * FROM habits WHERE LOWER(Habit) = LOWER(@habit)";
+                
+                tableCmd.Parameters.AddWithValue("@habit", habit);
+                
                 var secondreader = tableCmd.ExecuteReader();
                 
                 List<HabitRecord> tableData = new();
@@ -383,9 +386,12 @@ namespace habit_tracker
                 connection.Open();
 
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"INSERT INTO habits(habit, date, quantity) VALUES('{habit}', '{date}', '{quantity}')";
-                tableCmd.ExecuteNonQuery();
+                tableCmd.CommandText = $"INSERT INTO habits(habit, date, quantity) VALUES(@habit, @date, @quantity)";
 
+                tableCmd.Parameters.AddWithValue("@habit", habit);
+                tableCmd.Parameters.AddWithValue("@date", date);
+                tableCmd.Parameters.AddWithValue("@quantity", quantity);
+                tableCmd.ExecuteNonQuery();
                 connection.Close();
             }
         }
@@ -401,7 +407,10 @@ namespace habit_tracker
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"DELETE from habits where Id = '{recordId}'";
+                tableCmd.CommandText = $"DELETE from habits where Id = @RecordId";
+                
+                tableCmd.Parameters.AddWithValue("@RecordId", recordId);
+                
 
                 int rowCount = tableCmd.ExecuteNonQuery();
 
@@ -430,7 +439,10 @@ namespace habit_tracker
                 connection.Open();
 
                 var checkCmd = connection.CreateCommand();
-                checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM habits WHERE id = {recordId})";
+                checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM habits WHERE id = @RecordId)";
+                
+                checkCmd.Parameters.AddWithValue("@RecordId", recordId);
+                
                 int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                 if (checkQuery == 0)
@@ -447,8 +459,13 @@ namespace habit_tracker
                     GetNumberInput(
                         "\n\nPlease insert quantity to track (no decimals allowed)\n\n");
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"UPDATE habits SET habit = '{habit}', date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
-
+                tableCmd.CommandText =
+                    @"UPDATE habits SET habit = @habit, date = @date, quantity = @quantity WHERE Id = @RecordId";
+                tableCmd.Parameters.AddWithValue("@habit", habit);
+                tableCmd.Parameters.AddWithValue("@date", date);
+                tableCmd.Parameters.AddWithValue("@quantity", quantity);
+                tableCmd.Parameters.AddWithValue("@RecordId", recordId);
+                
                 tableCmd.ExecuteNonQuery();
                 
                 connection.Close();
